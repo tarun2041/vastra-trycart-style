@@ -8,6 +8,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { store } from './store/store';
 import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 import Index from "./pages/Index";
 import ProductListing from "./pages/ProductListing";
 import ProductDetails from "./pages/ProductDetails";
@@ -15,6 +16,12 @@ import Cart from "./pages/Cart";
 import TryCart from "./pages/TryCart";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Refund from "./pages/Refund";
+import FAQ from "./pages/FAQ";
+import Careers from "./pages/Careers";
 import NotFound from "./pages/NotFound";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -40,20 +47,29 @@ const App = () => (
             theme="light"
           />
           <BrowserRouter>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-background flex flex-col">
               <Header />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/products" element={<ProductListing />} />
-                <Route path="/products/:category" element={<ProductListing />} />
-                <Route path="/product/:id" element={<ProductDetails />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/trycart" element={<TryCart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/products" element={<ProductListing />} />
+                  <Route path="/products/:category" element={<ProductListing />} />
+                  <Route path="/product/:id" element={<ProductDetails />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/trycart" element={<TryCart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/refund" element={<Refund />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/careers" element={<Careers />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <Footer />
             </div>
           </BrowserRouter>
         </TooltipProvider>

@@ -51,15 +51,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showTryCart = true }
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {product.isNew && (
-              <Badge className="bg-success text-success-foreground text-xs">New</Badge>
+              <Badge className="bg-success text-success-foreground text-xs font-bold shadow-sm">New</Badge>
             )}
             {product.isTrending && (
-              <Badge className="bg-gradient-to-r from-primary to-secondary text-white text-xs">
+              <Badge className="bg-secondary text-secondary-foreground text-xs font-bold shadow-brand">
                 Trending
               </Badge>
             )}
             {discountPercentage > 0 && (
-              <Badge className="bg-destructive text-destructive-foreground text-xs">
+              <Badge className="bg-destructive text-destructive-foreground text-xs font-bold shadow-sm">
                 {discountPercentage}% OFF
               </Badge>
             )}

@@ -52,27 +52,27 @@ const TryCart: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+            <div className="w-14 h-14 bg-accent rounded-lg flex items-center justify-center shadow-glow">
+              <Zap className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">TryCart Innovation</h1>
-              <p className="text-muted-foreground">Try before you buy - Revolutionary fashion experience</p>
+              <h1 className="text-4xl font-bold">TryCart Innovation</h1>
+              <p className="text-muted-foreground text-lg">Try before you buy - Revolutionary fashion experience</p>
             </div>
           </div>
 
           {/* TryCart Status */}
           <div className="flex items-center gap-4">
-            <Badge className="trycart-badge text-lg px-4 py-2">
+            <Badge className="trycart-badge text-base px-5 py-2 shadow-glow">
               {items.length}/{maxItems} slots used
             </Badge>
             {isPaid ? (
-              <Badge className="bg-success text-success-foreground text-lg px-4 py-2">
+              <Badge className="bg-success text-success-foreground text-base px-5 py-2 shadow-md">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Security Paid
               </Badge>
             ) : (
-              <Badge variant="outline" className="text-lg px-4 py-2">
+              <Badge variant="outline" className="border-2 text-base px-5 py-2">
                 Security Pending
               </Badge>
             )}

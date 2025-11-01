@@ -16,17 +16,17 @@ const Header: React.FC = () => {
   const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40">
+    <header className="sticky top-0 z-50 bg-primary backdrop-blur-sm border-b border-primary-light shadow-md">
       <div className="container mx-auto px-4 py-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between mb-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+            <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center shadow-brand">
               <span className="text-white font-bold text-xl">V</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gradient-brand">Vastra Bazaar</h1>
-              <p className="text-xs text-muted-foreground">Quick Commerce Fashion</p>
+              <h1 className="text-xl font-bold text-white">Vastra Bazaar</h1>
+              <p className="text-xs text-accent">Quick Commerce Fashion</p>
             </div>
           </Link>
 
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search for clothes, brands, and more..."
-                className="pl-10 pr-4 py-2 rounded-xl border-border/50 focus:border-primary"
+                className="pl-10 pr-4 py-2 rounded-lg bg-white border-border focus:border-secondary shadow-sm"
               />
             </div>
           </div>
@@ -46,34 +46,34 @@ const Header: React.FC = () => {
             {/* TryCart */}
             <Button
               variant="ghost"
-              className="relative hover-lift"
+              className="relative text-white hover:text-accent hover:bg-white/10"
               onClick={() => navigate('/trycart')}
             >
-              <Zap className="w-5 h-5 text-accent" />
+              <Zap className="w-5 h-5" />
               {tryCartItems.length > 0 && (
-                <Badge className="absolute -top-2 -right-2 trycart-badge text-xs">
+                <Badge className="absolute -top-2 -right-2 trycart-badge text-xs shadow-glow">
                   {tryCartItems.length}
                 </Badge>
               )}
-              <span className="ml-2 font-semibold text-accent">TryCart</span>
+              <span className="ml-2 font-semibold">TryCart</span>
             </Button>
 
             {/* Regular Cart */}
             <Button
               variant="ghost"
-              className="relative hover-lift"
+              className="relative text-white hover:text-accent hover:bg-white/10"
               onClick={() => navigate('/cart')}
             >
               <ShoppingCart className="w-5 h-5" />
               {totalCartItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 btn-brand text-xs">
+                <Badge className="absolute -top-2 -right-2 bg-secondary text-white text-xs shadow-brand">
                   {totalCartItems}
                 </Badge>
               )}
             </Button>
 
             {/* Wishlist */}
-            <Button variant="ghost" className="hover-lift">
+            <Button variant="ghost" className="text-white hover:text-accent hover:bg-white/10">
               <Heart className="w-5 h-5" />
             </Button>
 
@@ -81,14 +81,14 @@ const Header: React.FC = () => {
             {isAuthenticated ? (
               <Button
                 variant="ghost"
-                className="hover-lift"
+                className="text-white hover:text-accent hover:bg-white/10"
                 onClick={() => navigate('/dashboard')}
               >
                 <User className="w-5 h-5" />
                 <span className="ml-2">{user?.name}</span>
               </Button>
             ) : (
-              <Button className="btn-brand">
+              <Button className="bg-secondary text-white hover:bg-secondary-dark">
                 <User className="w-4 h-4 mr-2" />
                 Login
               </Button>
@@ -100,31 +100,31 @@ const Header: React.FC = () => {
         <nav className="flex items-center justify-center space-x-8">
           <Link 
             to="/products/Men" 
-            className="text-foreground hover:text-primary transition-colors font-medium"
+            className="text-white/90 hover:text-white transition-all duration-300 font-medium hover:-translate-y-0.5"
           >
             Men
           </Link>
           <Link 
             to="/products/Women" 
-            className="text-foreground hover:text-primary transition-colors font-medium"
+            className="text-white/90 hover:text-white transition-all duration-300 font-medium hover:-translate-y-0.5"
           >
             Women
           </Link>
           <Link 
             to="/products/Kids" 
-            className="text-foreground hover:text-primary transition-colors font-medium"
+            className="text-white/90 hover:text-white transition-all duration-300 font-medium hover:-translate-y-0.5"
           >
             Kids
           </Link>
           <Link 
             to="/products/Accessories" 
-            className="text-foreground hover:text-primary transition-colors font-medium"
+            className="text-white/90 hover:text-white transition-all duration-300 font-medium hover:-translate-y-0.5"
           >
             Accessories
           </Link>
           <Link 
             to="/products" 
-            className="text-accent hover:text-accent-dark transition-colors font-semibold"
+            className="text-accent hover:text-accent-light transition-all duration-300 font-bold hover:-translate-y-0.5"
           >
             Try & Buy
           </Link>

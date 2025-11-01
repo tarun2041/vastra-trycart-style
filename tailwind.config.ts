@@ -71,18 +71,12 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
-      backgroundImage: {
-        'gradient-brand': 'var(--gradient-brand)',
-        'gradient-hero': 'var(--gradient-hero)',
-        'gradient-card': 'var(--gradient-card)',
-        'gradient-button': 'var(--gradient-button)',
-        'gradient-accent': 'var(--gradient-accent)',
-      },
       boxShadow: {
         'brand': 'var(--shadow-brand)',
-        'brand-sm': 'var(--shadow-sm)',
-        'brand-md': 'var(--shadow-md)',
-        'brand-lg': 'var(--shadow-lg)',
+        'glow': 'var(--shadow-glow)',
+        'sm': 'var(--shadow-sm)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
       },
       borderRadius: {
         lg: "var(--radius)",

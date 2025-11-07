@@ -1,17 +1,27 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, User, Heart, Search, Zap, Package, LogOut } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState } from '@/store/store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Heart, User, Search, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/useAuth';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { items: cartItems } = useSelector((state: RootState) => state.cart);
-  const { items: tryCartItems } = useSelector((state: RootState) => state.tryCart);
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const tryCartItems = useSelector((state: RootState) => state.tryCart.items);
+  const { user, isAdmin, signOut } = useAuth();
 
   const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -73,22 +83,58 @@ const Header: React.FC = () => {
             </Button>
 
             {/* Wishlist */}
-            <Button variant="ghost" className="text-white hover:text-accent hover:bg-white/10">
+            <Button
+              variant="ghost"
+              className="text-white hover:text-accent hover:bg-white/10"
+              onClick={() => navigate('/wishlist')}
+            >
               <Heart className="w-5 h-5" />
             </Button>
 
             {/* User Account */}
-            {isAuthenticated ? (
-              <Button
-                variant="ghost"
-                className="text-white hover:text-accent hover:bg-white/10"
-                onClick={() => navigate('/dashboard')}
-              >
-                <User className="w-5 h-5" />
-                <span className="ml-2">{user?.name}</span>
-              </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative text-white hover:text-accent hover:bg-white/10">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-secondary text-white">
+                        {user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{user.email}</p>
+                      {isAdmin && (
+                        <Badge variant="secondary" className="w-fit">Admin</Badge>
+                      )}
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <User className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate('/admin')}>
+                      <Package className="mr-2 h-4 w-4" />
+                      Admin Panel
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <Button className="bg-secondary text-white hover:bg-secondary-dark">
+              <Button
+                className="bg-secondary text-white hover:bg-secondary-dark"
+                onClick={() => navigate('/auth/login')}
+              >
                 <User className="w-4 h-4 mr-2" />
                 Login
               </Button>

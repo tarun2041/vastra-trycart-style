@@ -3,12 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
-import { ToastContainer } from 'react-toastify';
+import { Provider } from 'react-redux';
 import { store } from './store/store';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from './hooks/useAuth';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import Index from "./pages/Index";
 import ProductListing from "./pages/ProductListing";
 import ProductDetails from "./pages/ProductDetails";
@@ -23,59 +26,63 @@ import Refund from "./pages/Refund";
 import FAQ from "./pages/FAQ";
 import Careers from "./pages/Careers";
 import NotFound from "./pages/NotFound";
-import 'react-toastify/dist/ReactToastify.css';
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <Provider store={store}>
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+          <ToastContainer position="top-right" autoClose={3000} />
           <BrowserRouter>
-            <div className="min-h-screen bg-background flex flex-col">
-              <Header />
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/products" element={<ProductListing />} />
-                  <Route path="/products/:category" element={<ProductListing />} />
-                  <Route path="/product/:id" element={<ProductDetails />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/trycart" element={<TryCart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/refund" element={<Refund />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/careers" element={<Careers />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
+            <AuthProvider>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/products" element={<ProductListing />} />
+                    <Route path="/products/:category" element={<ProductListing />} />
+                    <Route path="/product/:id" element={<ProductDetails />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/trycart" element={<TryCart />} />
+                    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/refund" element={<Refund />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/careers" element={<Careers />} />
+                    
+                    {/* Auth Routes */}
+                    <Route path="/auth/login" element={<Login />} />
+                    <Route path="/auth/signup" element={<Signup />} />
+                    <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/auth/reset-password" element={<ResetPassword />} />
+                    
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+                    
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  </Provider>
+      </Provider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

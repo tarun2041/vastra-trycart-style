@@ -12,6 +12,7 @@ import { AuthProvider } from './hooks/useAuth';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import ChatButton from "./components/chat/ChatButton";
 import Index from "./pages/Index";
 import ProductListing from "./pages/ProductListing";
 import ProductDetails from "./pages/ProductDetails";
@@ -75,6 +76,7 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
+                <ChatButton />
                 <Footer />
               </div>
             </AuthProvider>

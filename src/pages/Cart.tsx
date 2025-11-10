@@ -1,22 +1,17 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { RootState } from '../store/store';
-import { removeFromCart, updateQuantity, clearCart } from '../store/slices/cartSlice';
+import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
-import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
 const Cart: React.FC = () => {
-  const dispatch = useDispatch();
-  const { items, total } = useSelector((state: RootState) => state.cart);
+  const { items, total, loading, removeFromCart, updateQuantity, clearCart } = useCart(false);
 
   const handleRemoveItem = (productId: string) => {
-    dispatch(removeFromCart(productId));
-    toast.info('Item removed from cart');
+    removeFromCart(productId);
   };
 
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
@@ -24,12 +19,11 @@ const Cart: React.FC = () => {
       handleRemoveItem(productId);
       return;
     }
-    dispatch(updateQuantity({ id: productId, quantity: newQuantity }));
+    updateQuantity(productId, newQuantity);
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
-    toast.info('Cart cleared');
+    clearCart();
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

@@ -1,45 +1,55 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { RootState } from '../store/store';
-import { removeFromTryCart, clearTryCart, paySecurityAmount } from '../store/slices/tryCartSlice';
-import { addToCart } from '../store/slices/cartSlice';
+import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Zap, Trash2, ShoppingCart, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
-import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const TryCart: React.FC = () => {
-  const dispatch = useDispatch();
-  const { items, maxItems, securityAmount, isPaid } = useSelector((state: RootState) => state.tryCart);
+  const { items, loading, removeFromCart, clearCart } = useCart(true);
+  const regularCart = useCart(false);
+  const [isPaid, setIsPaid] = useState(false);
+  
+  const maxItems = 5;
+  const securityAmount = 500;
 
   const handleRemoveItem = (productId: string) => {
-    dispatch(removeFromTryCart(productId));
-    toast.info('Item removed from TryCart');
+    removeFromCart(productId);
   };
 
   const handleMoveToCart = (productId: string) => {
     const item = items.find(item => item.product.id === productId);
     if (item) {
-      dispatch(addToCart(item.product));
-      dispatch(removeFromTryCart(productId));
+      regularCart.addToCart(item.product, item.quantity);
+      removeFromCart(productId);
       toast.success('Item moved to regular cart!');
     }
   };
 
   const handlePaySecurity = () => {
-    dispatch(paySecurityAmount());
+    setIsPaid(true);
     toast.success('Security amount paid! Your items will be delivered shortly.');
   };
 
   const handleClearTryCart = () => {
-    dispatch(clearTryCart());
-    toast.info('TryCart cleared');
+    clearCart();
   };
 
-  const totalValue = items.reduce((sum, item) => sum + item.product.price, 0);
+  const totalValue = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
+  if (loading && items.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

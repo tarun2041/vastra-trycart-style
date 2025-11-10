@@ -1,13 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Product } from '../../types/Product';
-import { addToCart } from '../../store/slices/cartSlice';
-import { addToTryCart } from '../../store/slices/tryCartSlice';
+import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart, Zap, Heart } from 'lucide-react';
-import { toast } from 'react-toastify';
 
 interface ProductCardProps {
   product: Product;
@@ -15,22 +12,19 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, showTryCart = true }) => {
-  const dispatch = useDispatch();
+  const { addToCart } = useCart(false);
+  const { addToCart: addToTryCart } = useCart(true);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(addToCart(product));
-    toast.success(`${product.name} added to cart!`);
+    addToCart(product, 1);
   };
 
   const handleAddToTryCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(addToTryCart(product));
-    toast.success(`${product.name} added to TryCart!`, {
-      className: 'trycart-toast',
-    });
+    addToTryCart(product, 1);
   };
 
   const discountPercentage = product.originalPrice 

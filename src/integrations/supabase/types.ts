@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          is_try_cart: boolean | null
+          product_id: string
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_try_cart?: boolean | null
+          product_id: string
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_try_cart?: boolean | null
+          product_id?: string
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
@@ -64,39 +102,72 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          discount: number | null
           id: string
           image_url: string | null
+          images: string[] | null
+          is_new: boolean | null
+          is_trending: boolean | null
           is_try_cart: boolean | null
           name: string
+          offers: string[] | null
+          original_price: number | null
           price: number
-          stock_quantity: number
+          rating: number | null
+          reviews: number | null
+          stock: number
+          subcategory: string
           updated_at: string
+          vendor_id: string | null
+          vendor_name: string | null
         }
         Insert: {
           category: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          discount?: number | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
+          is_new?: boolean | null
+          is_trending?: boolean | null
           is_try_cart?: boolean | null
           name: string
+          offers?: string[] | null
+          original_price?: number | null
           price: number
-          stock_quantity?: number
+          rating?: number | null
+          reviews?: number | null
+          stock?: number
+          subcategory?: string
           updated_at?: string
+          vendor_id?: string | null
+          vendor_name?: string | null
         }
         Update: {
           category?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          discount?: number | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
+          is_new?: boolean | null
+          is_trending?: boolean | null
           is_try_cart?: boolean | null
           name?: string
+          offers?: string[] | null
+          original_price?: number | null
           price?: number
-          stock_quantity?: number
+          rating?: number | null
+          reviews?: number | null
+          stock?: number
+          subcategory?: string
           updated_at?: string
+          vendor_id?: string | null
+          vendor_name?: string | null
         }
         Relationships: []
       }

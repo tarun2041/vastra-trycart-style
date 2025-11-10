@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { RootState } from '../store/store';
-import { setProducts, filterByCategory, sortProducts } from '../store/slices/productsSlice';
-import { sampleProducts } from '../data/sampleProducts';
+import { useProducts } from '@/hooks/useProducts';
 import ProductCard from '../components/products/ProductCard';
 import ProductFilters, { FilterState } from '../components/products/ProductFilters';
 import { Button } from '@/components/ui/button';
@@ -16,10 +13,10 @@ import { Product } from '../types/Product';
 
 const ProductListing: React.FC = () => {
   const { category } = useParams();
-  const dispatch = useDispatch();
-  const { filteredProducts, loading, sortBy } = useSelector((state: RootState) => state.products);
+  const { products, loading } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+  const [sortBy, setSortBy] = useState<'popularity' | 'price-low' | 'price-high' | 'newest'>('popularity');
   const [filters, setFilters] = useState<FilterState>({
     priceRange: [0, 10000],
     categories: [],
@@ -28,23 +25,21 @@ const ProductListing: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(setProducts(sampleProducts));
-    if (category) {
-      dispatch(filterByCategory(category as any));
-    }
-  }, [dispatch, category]);
-
-  useEffect(() => {
     applyAllFilters();
-  }, [filteredProducts, searchQuery, filters]);
+  }, [products, searchQuery, filters, sortBy, category]);
 
   const applyAllFilters = () => {
-    let products = [...filteredProducts];
+    let filteredProducts = [...products];
+
+    // Category filter from URL
+    if (category) {
+      filteredProducts = filteredProducts.filter((p) => p.category === category);
+    }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      products = products.filter(
+      filteredProducts = filteredProducts.filter(
         (p) =>
           p.name.toLowerCase().includes(query) ||
           p.description.toLowerCase().includes(query) ||
@@ -53,33 +48,52 @@ const ProductListing: React.FC = () => {
       );
     }
 
-    // Category filter
+    // Category filter from filters
     if (filters.categories.length > 0) {
-      products = products.filter((p) =>
+      filteredProducts = filteredProducts.filter((p) =>
         filters.categories.includes(p.category)
       );
     }
 
     // Price filter
-    products = products.filter(
+    filteredProducts = filteredProducts.filter(
       (p) => p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
     );
 
     // Rating filter
     if (filters.minRating > 0) {
-      products = products.filter((p) => p.rating >= filters.minRating);
+      filteredProducts = filteredProducts.filter((p) => p.rating >= filters.minRating);
     }
 
     // Stock filter
     if (filters.inStock) {
-      products = products.filter((p) => p.stock > 0);
+      filteredProducts = filteredProducts.filter((p) => p.stock > 0);
     }
 
-    setDisplayProducts(products);
+    // Apply sorting
+    switch (sortBy) {
+      case 'price-low':
+        filteredProducts.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        filteredProducts.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        filteredProducts.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
+      case 'popularity':
+      default:
+        filteredProducts.sort((a, b) => b.rating - a.rating);
+        break;
+    }
+
+    setDisplayProducts(filteredProducts);
   };
 
   const handleSortChange = (value: string) => {
-    dispatch(sortProducts(value as any));
+    setSortBy(value as any);
   };
 
   const handleFilterChange = (newFilters: FilterState) => {

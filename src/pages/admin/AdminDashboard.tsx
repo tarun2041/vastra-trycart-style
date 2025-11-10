@@ -18,7 +18,7 @@ interface Product {
   price: number;
   image_url: string | null;
   category: string;
-  stock_quantity: number;
+  stock: number;
   is_try_cart: boolean;
 }
 
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
     price: '',
     image_url: '',
     category: '',
-    stock_quantity: '',
+    stock: '',
     is_try_cart: false,
   });
 
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
         price: parseFloat(formData.price),
         image_url: formData.image_url || null,
         category: formData.category,
-        stock_quantity: parseInt(formData.stock_quantity),
+        stock: parseInt(formData.stock),
         is_try_cart: formData.is_try_cart,
       };
 
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
       price: '',
       image_url: '',
       category: '',
-      stock_quantity: '',
+      stock: '',
       is_try_cart: false,
     });
     setSelectedProduct(null);
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
       price: product.price.toString(),
       image_url: product.image_url || '',
       category: product.category,
-      stock_quantity: product.stock_quantity.toString(),
+      stock: product.stock.toString(),
       is_try_cart: product.is_try_cart,
     });
     setDialogOpen(true);
@@ -222,8 +222,8 @@ export default function AdminDashboard() {
                     <Input
                       id="stock"
                       type="number"
-                      value={formData.stock_quantity}
-                      onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+                      value={formData.stock}
+                      onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                       required
                     />
                   </div>
@@ -312,7 +312,7 @@ export default function AdminDashboard() {
                       ₹{product.price.toFixed(2)}
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      Stock: {product.stock_quantity}
+                      Stock: {product.stock}
                     </span>
                   </div>
                   <div className="flex space-x-2">

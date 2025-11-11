@@ -1,30 +1,28 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { User, ShoppingBag, Zap, Heart, Package, Star } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useOrders } from '@/hooks/useOrders';
+import { useWishlist } from '@/hooks/useWishlist';
 
 const Dashboard: React.FC = () => {
-  // Mock data for demonstration
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'customer' as const,
-  };
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { orders } = useOrders(false);
+  const { items: wishlistItems } = useWishlist();
 
   const stats = {
-    totalOrders: 12,
-    tryCartUsed: 5,
-    wishlistItems: 8,
-    totalSpent: 15640,
+    totalOrders: orders.length,
+    tryCartUsed: orders.filter(o => o.is_try_order).length,
+    wishlistItems: wishlistItems.length,
+    totalSpent: orders.reduce((sum, order) => sum + order.total_price, 0),
   };
 
-  const recentOrders = [
-    { id: '1', date: '2024-01-20', amount: 2499, status: 'Delivered', items: 2 },
-    { id: '2', date: '2024-01-18', amount: 1299, status: 'Shipped', items: 1 },
-    { id: '3', date: '2024-01-15', amount: 3499, status: 'Processing', items: 3 },
-  ];
+  const recentOrders = orders.slice(0, 3);
 
   return (
     <>
@@ -41,11 +39,10 @@ const Dashboard: React.FC = () => {
               <User className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Welcome back, {user.name}!</h1>
-              <p className="text-muted-foreground">{user.email}</p>
+              <h1 className="text-3xl font-bold">Welcome back, {user?.email?.split('@')[0]}!</h1>
+              <p className="text-muted-foreground">{user?.email}</p>
             </div>
           </div>
-          <Badge className="btn-brand capitalize">{user.role}</Badge>
         </div>
 
         {/* Stats Cards */}
@@ -101,28 +98,38 @@ const Dashboard: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {recentOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-semibold">Order #{order.id}</p>
-                    <p className="text-sm text-muted-foreground">{order.date}</p>
-                    <p className="text-sm text-muted-foreground">{order.items} items</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold">₹{order.amount}</p>
-                    <Badge 
-                      className={
-                        order.status === 'Delivered' ? 'bg-success text-success-foreground' :
-                        order.status === 'Shipped' ? 'bg-primary text-primary-foreground' :
-                        'bg-secondary text-secondary-foreground'
-                      }
-                    >
-                      {order.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-              <Button variant="outline" className="w-full">View All Orders</Button>
+              {recentOrders.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No orders yet</p>
+              ) : (
+                <>
+                  {recentOrders.map((order) => (
+                    <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-semibold">Order #{order.id.slice(0, 8)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(order.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-muted-foreground">{order.quantity} items</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold">₹{order.total_price}</p>
+                        <Badge 
+                          className={
+                            order.status === 'delivered' ? 'bg-success text-success-foreground' :
+                            order.status === 'shipped' || order.status === 'out_for_delivery' ? 'bg-primary text-primary-foreground' :
+                            'bg-secondary text-secondary-foreground'
+                          }
+                        >
+                          {order.status.replace('_', ' ')}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" className="w-full" onClick={() => navigate('/orders')}>
+                    View All Orders
+                  </Button>
+                </>
+              )}
             </CardContent>
           </Card>
 
@@ -151,21 +158,21 @@ const Dashboard: React.FC = () => {
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="p-6 h-auto flex-col hover-lift">
+            <Button variant="outline" className="p-6 h-auto flex-col hover-lift" onClick={() => navigate('/orders')}>
               <ShoppingBag className="w-6 h-6 mb-2" />
               View Orders
             </Button>
-            <Button variant="outline" className="p-6 h-auto flex-col hover-lift">
+            <Button variant="outline" className="p-6 h-auto flex-col hover-lift" onClick={() => navigate('/wishlist')}>
               <Heart className="w-6 h-6 mb-2" />
               Wishlist
             </Button>
-            <Button variant="outline" className="p-6 h-auto flex-col hover-lift">
-              <User className="w-6 h-6 mb-2" />
-              Edit Profile
+            <Button variant="outline" className="p-6 h-auto flex-col hover-lift" onClick={() => navigate('/products')}>
+              <ShoppingBag className="w-6 h-6 mb-2" />
+              Browse Products
             </Button>
-            <Button variant="outline" className="p-6 h-auto flex-col hover-lift">
-              <Star className="w-6 h-6 mb-2" />
-              Reviews
+            <Button variant="outline" className="p-6 h-auto flex-col hover-lift" onClick={() => navigate('/trycart')}>
+              <Zap className="w-6 h-6 mb-2" />
+              TryCart
             </Button>
           </div>
         </div>

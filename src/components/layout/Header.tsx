@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Heart, Search, Zap, Package, LogOut } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
+import { useWishlist } from '@/hooks/useWishlist';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -19,9 +19,10 @@ import {
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const tryCartItems = useSelector((state: RootState) => state.tryCart.items);
   const { user, isAdmin, signOut } = useAuth();
+  const { items: cartItems } = useCart(false);
+  const { items: tryCartItems } = useCart(true);
+  const { items: wishlistItems } = useWishlist();
 
   const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -85,10 +86,15 @@ const Header: React.FC = () => {
             {/* Wishlist */}
             <Button
               variant="ghost"
-              className="text-white hover:text-accent hover:bg-white/10"
+              className="relative text-white hover:text-accent hover:bg-white/10"
               onClick={() => navigate('/wishlist')}
             >
               <Heart className="w-5 h-5" />
+              {wishlistItems.length > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs shadow-brand">
+                  {wishlistItems.length}
+                </Badge>
+              )}
             </Button>
 
             {/* User Account */}

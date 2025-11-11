@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../../types/Product';
 import { useCart } from '@/hooks/useCart';
+import { useWishlist } from '@/hooks/useWishlist';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart, Zap, Heart } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +16,8 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, showTryCart = true }) => {
   const { addToCart } = useCart(false);
   const { addToCart: addToTryCart } = useCart(true);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const inWishlist = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,13 +67,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showTryCart = true }
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-3 right-3 bg-white/80 hover:bg-white"
+            className={cn(
+              "absolute top-3 right-3 bg-white/80 hover:bg-white",
+              inWishlist && "text-red-500 hover:text-red-600"
+            )}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              toggleWishlist(product);
             }}
           >
-            <Heart className="w-4 h-4" />
+            <Heart className={cn("w-4 h-4", inWishlist && "fill-current")} />
           </Button>
 
           {/* Action Buttons - Show on Hover */}

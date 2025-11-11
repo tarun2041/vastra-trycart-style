@@ -54,35 +54,53 @@ export type Database = {
       }
       orders: {
         Row: {
+          address: Json | null
           created_at: string
           id: string
           is_try_order: boolean | null
+          notes: string | null
+          payment_id: string | null
+          payment_method: string | null
+          payment_status: string | null
           product_id: string
           quantity: number
           status: string
           total_price: number
+          tracking_number: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          address?: Json | null
           created_at?: string
           id?: string
           is_try_order?: boolean | null
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           product_id: string
           quantity?: number
           status?: string
           total_price: number
+          tracking_number?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          address?: Json | null
           created_at?: string
           id?: string
           is_try_order?: boolean | null
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           product_id?: string
           quantity?: number
           status?: string
           total_price?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -197,6 +215,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          images: string[] | null
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string | null
+          user_id: string
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          comment: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          images?: string[] | null
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          comment?: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          images?: string[] | null
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
